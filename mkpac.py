@@ -24,7 +24,7 @@ def run(dump_csv, output, proxy):
 
     domains = set()
 
-    for row in reader:
+    for line_number, row in enumerate(reader, start=2):
         for domain in iter_field(row[1]):
             if domain.startswith('*.'):
                 domain = domain[2:]
@@ -34,15 +34,19 @@ def run(dump_csv, output, proxy):
 
             if domain:
                 domains.add(domain)
+            else:
+                logging.warning("Empty domain name in line %d", line_number)
 
         for url in iter_field(row[2]):
             try:
                 domain = urllib.parse.urlsplit(url, scheme='http').hostname
                 if domain:
                     domains.add(domain)
+                else:
+                    logging.warning("Can't find hostname in %r URL, line %d", url, line_number)
 
             except Exception:
-                logging.exception("Can't parse %r as URL", url)
+                logging.exception("Can't parse %r as URL, line %d", url, line_number)
 
     logging.info('Total domains: %d', len(domains))
 
