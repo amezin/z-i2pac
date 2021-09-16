@@ -29,6 +29,9 @@ def run(dump_csv, output, proxy):
             if domain.startswith('*.'):
                 domain = domain[2:]
 
+            if domain.startswith('.'):
+                domain = domain[1:]
+
             if domain:
                 domains.add(domain)
 
