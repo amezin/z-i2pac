@@ -24,5 +24,5 @@ git checkout FETCH_HEAD
 
 cd ..
 
-./mkpac.py -o z-i.pac.tmp -p "${PROXY}" z-i/dump.csv
+./mkpac.py -o z-i.pac.tmp -p "${PROXY}" -n z-i/nxdomain.txt z-i/dump.csv
 mv z-i.pac.tmp z-i.pac

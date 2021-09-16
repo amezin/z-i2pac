@@ -26,7 +26,12 @@ class Column(enum.IntEnum):
     URLS = 2
 
 
-def run(dump_csv, output, proxy):
+def run(dump_csv, output, proxy, nxdomain):
+    if nxdomain:
+        nx_domains = set(line.strip() for line in nxdomain)
+    else:
+        nx_domains = set()
+
     reader = csv.reader(dump_csv, delimiter=';')
     next(reader)  # "Updated on ..."
 
@@ -41,7 +46,8 @@ def run(dump_csv, output, proxy):
                 domain = domain[1:]
 
             if domain:
-                domains.add(domain)
+                if domain not in nx_domains:
+                    domains.add(domain)
             else:
                 logging.warning("Empty domain name in line %d", line_number)
 
@@ -49,7 +55,8 @@ def run(dump_csv, output, proxy):
             try:
                 domain = urllib.parse.urlsplit(url, scheme='http').hostname
                 if domain:
-                    domains.add(domain)
+                    if domain not in nx_domains:
+                        domains.add(domain)
                 else:
                     logging.warning("Can't find hostname in %r URL, line %d", url, line_number)
 
@@ -83,6 +90,7 @@ def main():
     parser.add_argument('dump_csv', type=argparse.FileType('r', encoding='cp1251'))
     parser.add_argument('-o', '--output', type=argparse.FileType('w'), default=sys.stdout)
     parser.add_argument('-p', '--proxy', type=str, required=True)
+    parser.add_argument('-n', '--nxdomain', type=argparse.FileType('r', encoding='cp1251'))
     run(**vars(parser.parse_args()))
 
 
