@@ -12,7 +12,7 @@ csv.field_size_limit(sys.maxsize)
 
 
 def iter_field(field):
-    for item in field.split('|'):
+    for item in field.split(' | '):
         item = item.strip()
         if item:
             yield item
