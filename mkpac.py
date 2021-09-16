@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import enum
 import json
 import logging
 import sys
@@ -18,6 +19,13 @@ def iter_field(field):
             yield item
 
 
+@enum.unique
+class Column(enum.IntEnum):
+    IPS = 0
+    DOMAINS = 1
+    URLS = 2
+
+
 def run(dump_csv, output, proxy):
     reader = csv.reader(dump_csv, delimiter=';')
     next(reader)  # "Updated on ..."
@@ -25,7 +33,7 @@ def run(dump_csv, output, proxy):
     domains = set()
 
     for line_number, row in enumerate(reader, start=2):
-        for domain in iter_field(row[1]):
+        for domain in iter_field(row[Column.DOMAINS]):
             if domain.startswith('*.'):
                 domain = domain[2:]
 
@@ -37,7 +45,7 @@ def run(dump_csv, output, proxy):
             else:
                 logging.warning("Empty domain name in line %d", line_number)
 
-        for url in iter_field(row[2]):
+        for url in iter_field(row[Column.URLS]):
             try:
                 domain = urllib.parse.urlsplit(url, scheme='http').hostname
                 if domain:
