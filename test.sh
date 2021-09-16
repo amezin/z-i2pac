@@ -9,7 +9,3 @@ set -ex
 [ "$(pactester -p z-i.pac -u 'http://www.rutracker.org')" == "${PROXY}" ]
 
 [ "$(pactester -p z-i.pac -u 'http://www.google.com')" == "DIRECT" ]
-
-[ "$(pactester -p z-i.pac -u 'http://195.82.146.214')" == "${PROXY}" ]
-
-[ "$(pactester -p z-i.pac -u 'http://8.8.8.8" == "DIRECT" ]
