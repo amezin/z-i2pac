@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 
-Z_I_URL := https://github.com/zapret-info/z-i.git
-PROXY := SOCKS5 192.168.1.1:1080
+include defaults.mk
 
 ifeq ($(guile (string-downcase "$(firstword $(PROXY))")),PROXY)
 	GIT_PROXY := $(wordlist 2,$(words $(PROXY)),$(PROXY))
@@ -28,7 +27,7 @@ z-i/update: z-i/.git
 .PHONY: z-i/update
 
 z-i.pac: z-i/update
-	$(MAKE) -f mkpac.mk "PROXY=$(PROXY)" $@
+	$(MAKE) -f mkpac.mk $@
 
 .PHONY: z-i.pac
 
