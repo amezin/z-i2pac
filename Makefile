@@ -27,18 +27,10 @@ z-i/update: z-i/.git
 
 .PHONY: z-i/update
 
-ifeq ($(RECURSE),)
-
 z-i.pac: z-i/update
-	$(MAKE) RECURSE=1 $@
+	$(MAKE) -f mkpac.mk "PROXY=$(PROXY)" $@
 
-else
-
-z-i.pac: z-i/dump.csv z-i/nxdomain.txt mkpac.py
-	./mkpac.py -o $@.tmp -p "$(PROXY)" -n z-i/nxdomain.txt z-i/dump.csv
-	mv $@.tmp $@
-
-endif
+.PHONY: z-i.pac
 
 test: z-i.pac
 	./test.sh "$(PROXY)"
